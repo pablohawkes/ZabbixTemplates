@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.2</version>
+    <date>2020-11-18T21:49:13Z</date>
+    <groups>
+        <group>
+            <name>MQTT</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Mosquitto MQTT Broker</template>
+            <name>Mosquitto MQTT Broker</name>
+            <groups>
+                <group>
+                    <name>MQTT</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Mosquitto MQTT Broker</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Mosquitto.SYS.broker.clients.connected</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/clients/connected&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.bytes.received.1min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/bytes/received/1min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.bytes.received.15min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/bytes/received/15min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.bytes.sent.1min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/bytes/sent/1min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.bytes.sent.15min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/bytes/sent/15min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.messages.received.1min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/messages/received/1min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.messages.received.15min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/messages/received/15min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.messages.sent.1min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/messages/sent/1min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.load.messages.sent.15min</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/load/messages/sent/15min&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.store.messages.bytes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/store/messages/bytes&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.store.messages.count</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/store/messages/count&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>30d</trends>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Mosquitto.SYS.broker.version</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>mqtt.get[{$MQTTBROKER.IP},&quot;$SYS/broker/version&quot;]</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>Mosquitto MQTT Broker</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$MQTTBROKER.IP}</macro>
+                    <value>127.0.0.1</value>
+                    <description>Default local IP for MQTT Broker. Replace if Broker is remote IP.</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
