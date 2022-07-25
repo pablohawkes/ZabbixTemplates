@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.2</version>
+    <date>2022-07-25T14:36:03Z</date>
+    <template_groups>
+        <template_group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
+            <name>Templates</name>
+        </template_group>
+    </template_groups>
+    <templates>
+        <template>
+            <uuid>5455f66f04734531a0495f1eb8a4c59b</uuid>
+            <template>Windows WMI by Zabbix Agent Active</template>
+            <name>Windows WMI by Zabbix Agent Active</name>
+            <description>Pablo Hawkes
+https://github.com/pablohawkes/ZabbixTemplates/</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>e686854c51e84121ae9b158c1f91f608</uuid>
+                    <name>WMI.Win32_ComputerSystem.raw</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    <delay>2h</delay>
+                    <history>3d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>se quita &quot;SystemFamily&quot; ya que no funciona en windows 7</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>WMI</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>2cf81aea62c64c8f926b48f7d9118404</uuid>
+                    <name>WMI.Win32_ComputerSystemProduct.raw</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystemProduct&quot;]</key>
+                    <delay>2h</delay>
+                    <history>3d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>WMI</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>79a470c40440465b8e5c1dc0632d3013</uuid>
+                    <name>WMI.Win32_OperatingSystem.raw</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    <delay>2h</delay>
+                    <history>3d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>WMI</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>be295bbb05ba4ab2a88b4953d594ae83</uuid>
+                    <name>WMI.Win32_ComputerSystem.CurrentTimeZone</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.CurrentTimeZone</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].CurrentTimeZone</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>4d9bc832e0c64867a3f77104dfd087b4</uuid>
+                    <name>WMI.Win32_ComputerSystem.DNSHostName</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.DNSHostName</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>MODEL</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].DNSHostName</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>02337b33015d4f4e8904372f8e961018</uuid>
+                    <name>WMI.Win32_ComputerSystem.Domain</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.Domain</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>LOCATION</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Domain</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>22115dc15f954a9f933bbbebb3ad06f3</uuid>
+                    <name>WMI.Win32_ComputerSystem.Manufacturer</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.Manufacturer</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Manufacturer</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>4b6ec5c811e9409bbcd7176180dd5f13</uuid>
+                    <name>WMI.Win32_ComputerSystem.Model</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.Model</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>TYPE</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Model</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>5a60a4d2d0b745fab5d8801f7d254128</uuid>
+                    <name>WMI.Win32_ComputerSystem.PartOfDomain</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.PartOfDomain</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].PartOfDomain</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>true</parameter>
+                                <parameter>In Domain (true)</parameter>
+                            </parameters>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>false</parameter>
+                                <parameter>Out of Domain (false)</parameter>
+                            </parameters>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>null</parameter>
+                                <parameter>Domain Staus Unknown (null)</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>98b7dbc2d13146f3a328e6bcf8df1a32</uuid>
+                    <name>WMI.Win32_ComputerSystem.SystemSKUNumber</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.SystemSKUNumber</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].SystemSKUNumber</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>df45b6302d8d45b4ba74d0480cb76be9</uuid>
+                    <name>WMI.Win32_ComputerSystem.ThermalState</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.ThermalState</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <valuemap>
+                        <name>Win32_ComputerSystem::ThermalState</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].ThermalState</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>e94e063b92da437faf3515b6fe2f7a0a</uuid>
+                    <name>WMI.Win32_ComputerSystem.UserName</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystem.UserName</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>ALIAS</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].UserName</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>ac60cba3673048c284953bf46e18e2ef</uuid>
+                    <name>WMI.Win32_ComputerSystemProduct.IdentifyingNumber</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystemProduct.IdentifyingNumber</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>TAG</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].IdentifyingNumber</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystemProduct&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System Product</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>6c56efba4d014f95b7e388d5bc51b091</uuid>
+                    <name>WMI.Win32_ComputerSystemProduct.Name</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystemProduct.Name</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Name</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystemProduct&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System Product</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>d99e7a62b4fe407f93870f44f612f7e2</uuid>
+                    <name>WMI.Win32_ComputerSystemProduct.Vendor</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_ComputerSystemProduct.Vendor</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>VENDOR</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Vendor</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_ComputerSystemProduct&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Computer System Product</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>58f56f9b54744ff0b7fa08fbc9fe1daf</uuid>
+                    <name>WMI.Win32_OperatingSystem.BuildNumber</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.BuildNumber</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].BuildNumber</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>d8b6ca4b6cd24c84a68d0c0a6671d3e4</uuid>
+                    <name>WMI.Win32_OperatingSystem.Caption</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.Caption</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>OS</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Caption</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>923c165e162040f9ad8b312e665e0a5a</uuid>
+                    <name>WMI.Win32_OperatingSystem.LastBootUpTime</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.LastBootUpTime</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].LastBootUpTime</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>fe5694568e694c9f930b6790282fdb5a</uuid>
+                    <name>WMI.Win32_OperatingSystem.Locale</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.Locale</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Locale</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>28e4495a25b640feb9c8a0c421ef8194</uuid>
+                    <name>WMI.Win32_OperatingSystem.OSLanguage</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.OSLanguage</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <valuemap>
+                        <name>Windows Wmi OSLanguage</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].OSLanguage</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>afd53dd670994ab68d2c04ced633bba7</uuid>
+                    <name>WMI.Win32_OperatingSystem.SerialNumber</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.SerialNumber</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].SerialNumber</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>75a2804272774128ad8fedcd4a65e113</uuid>
+                    <name>WMI.Win32_OperatingSystem.Version</name>
+                    <type>DEPENDENT</type>
+                    <key>WMI.Win32_OperatingSystem.Version</key>
+                    <delay>0</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$[0].Version</parameter>
+                            </parameters>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>ERROR ON JSON PROCESSING</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select * from Win32_OperatingSystem&quot;]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operating System</value>
+                        </tag>
+                    </tags>
+                </item>
+            </items>
+            <valuemaps>
+                <valuemap>
+                    <uuid>a726ec82241a475493e401e7661ec443</uuid>
+                    <name>Win32_ComputerSystem::ThermalState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Safe</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Warning</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Critical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Non-recoverable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>9f275f05f4014ce0b4202ea22dcc1c58</uuid>
+                    <name>Windows Wmi OSLanguage</name>
+                    <mappings>
+                        <mapping>
+                            <value>1033</value>
+                            <newvalue>English - United States</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1040</value>
+                            <newvalue>Italian - Italy</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1046</value>
+                            <newvalue>Portuguese - Brazil</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2058</value>
+                            <newvalue>Spanish - Mexico</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3082</value>
+                            <newvalue>Spanish - International Sort</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>
