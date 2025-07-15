@@ -1,0 +1,2314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2025-07-15T11:03:49Z</date>
+    <groups>
+        <group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>ec71f7cdb42a40318991642351b585d8</uuid>
+            <template>Latam_Items_Printer_GenericSnmp</template>
+            <name>Latam_Items_Printer_GenericSnmp</name>
+            <description>This template is valid for all printer manufacturers and all devices that are attached to the [RFC1759](https://tools.ietf.org/html/rfc1759.html) and [RFC3805](https://tools.ietf.org/html/rfc3805) (Printer-MIB).
+
+The serial number, trays, toner and output trays are discovered (LLD) and monitored. The counter and filling levels are displayed in graphs.
+
+created by Nico Wieczorek</description>
+            <templates>
+                <template>
+                    <name>Network Generic Device SNMP</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>57bb21ed0171469e8b106642dcb27ff8</uuid>
+                    <name>State - Door Open</name>
+                    <type>DEPENDENT</type>
+                    <key>doorOpen</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 4; // doorOpen
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>c15b2c73fd394d498cd3cbf438742d56</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/doorOpen)=1</expression>
+                            <name>Door Open</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>719265acdfa04a00a80652c9516dce5d</uuid>
+                    <name>Device Type</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.25.3.2.1.3.1</snmp_oid>
+                    <key>hrDeviceDescr</key>
+                    <delay>1h</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>TYPE</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>12h</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>General</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>481c7055f12e47b19723f7077fd29f4e</uuid>
+                    <name>Printer error state</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.25.3.5.1.2.1</snmp_oid>
+                    <key>hrPrinterDetectedErrorState</key>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>This object represents any error conditions detected by the printer.  The error conditions are encoded asbits in an octet string, with the following
+definitions: 
+
+Condition 				Bit # 	hrDeviceStatus 
+	lowPaper 			0 		warning(3) or down(5) 
+	noPaper 				1 		warning(3) or down(5)
+	lowToner 				2 		warning(3) or down(5)
+	noToner 				3		warning(3) or down(5)
+	doorOpen 			4 		warning(3) or down(5)
+	jammed 				5 		warning(3) or down(5)
+	offline 				6 		warning(3) or down(5)
+	serviceRequested 		7 		warning(3) or down(5)
+	inputTrayMissing 		8 		warning(3) or down(5)
+	outputTrayMissing 		9 		warning(3) or down(5)
+	markerSupplyMissing	10 		warning(3) or down(5)
+	outputNearFull 		11 		warning(3) or down(5)
+	outputFull 			12 		warning(3) or down(5)
+	inputTrayEmpty 		13 		warning(3) or down(5)
+	overduePreventMaint	14 		warning(3) or down(5)
+
+If multiple conditions are currently detected and the hrDeviceStatus would not otherwise be unknown(1) or testing(4), the hrDeviceStatus shall correspond to the worst state of those indicated, where down(5) is worse than warning(3) which is worse than running(2).
+Bits are numbered starting with the most significant bit of the first byte being bit 0, the least significant bit of the first byte being bit 7, the most significant bit of the second byte being bit 8,  and so on. A one bit encodes that the condition was detected, while a zero bit encodes that the condition was not detected.
+This object is useful for alerting an operator to specific warning or error conditions that may occur, especially those requiring human intervention. Because error bits 8 through 14 can indicate a printer that is still functioning, the corresponding (recommended) printer hrDeviceStatus can be either warning(3) or down(5).
+New bits may be defined by standards-track MIB modules but the maximum size of instances of this variable should be 128 octets.
+Parsed from file HOST-RESOURCES-V2-MIB.mib Module: HOST-RESOURCES-V2-MIB</description>
+                    <valuemap>
+                        <name>Printer - Error State</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1h</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Printer Information</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>901e3fc4e27044509ed92e4e39bde7fe</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/hrPrinterDetectedErrorState,#1:now-600s)&lt;&gt;&quot;00 00&quot;</expression>
+                            <name>Error ({ITEM.VALUE}) on Printer {HOST.NAME}</name>
+                            <url>http://{HOST.IP}</url>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>ef4a08e43fde480397d7d11231c94a83</uuid>
+                    <name>Printer status</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.25.3.5.1.1.1</snmp_oid>
+                    <key>hrPrinterStatus</key>
+                    <history>1w</history>
+                    <valuemap>
+                        <name>Printer - Status</name>
+                    </valuemap>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Printer Information</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>8a265a51fc0d45e19b7eca4cafd49301</uuid>
+                    <name>Device MAC address</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.2.2.1.6.1</snmp_oid>
+                    <key>ifPhysAddress</key>
+                    <delay>1h</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>MACADDRESS_A</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>12h</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>General</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>c0bc30aa614b45eab503f1ae166a80bd</uuid>
+                    <name>State - Input Tray Empty</name>
+                    <type>DEPENDENT</type>
+                    <key>inputTrayEmpty</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 13; // inputTrayEmpty
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>6049df43162145b6b6b73658bcd711e6</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/inputTrayEmpty)=1</expression>
+                            <name>Input Tray Empty</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>33eb0229e7614269bdc7ed810234888a</uuid>
+                    <name>State - Input Tray Missing</name>
+                    <type>DEPENDENT</type>
+                    <key>inputTrayMissing</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 8; // inputTrayMissing
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>e5d3885f4cad4870a89ead0809763d10</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/inputTrayMissing)=1</expression>
+                            <name>Input Tray Missing</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>7f4b631409804284b55279e0ae6876e5</uuid>
+                    <name>State - Jammed</name>
+                    <type>DEPENDENT</type>
+                    <key>jammed</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 5; // jammed
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>caa0ab24c621406caeb0e472547adba9</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/jammed)=1</expression>
+                            <name>Jammed</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>16399a541dad4b8784d2db21fb7e8334</uuid>
+                    <name>State - Low Paper</name>
+                    <type>DEPENDENT</type>
+                    <key>lowPaper</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 0; // lowPaper
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>063059c8e10b4aefa2eddea2aaeff50b</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/lowPaper)=1</expression>
+                            <name>Low Paper</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>5b1eeb63174a4e6da7e71248ebebd0b6</uuid>
+                    <name>State - Low Toner</name>
+                    <type>DEPENDENT</type>
+                    <key>lowToner</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 2; // lowToner
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>5f18507d3be542dfb870ab0abea3a269</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/lowToner)=1</expression>
+                            <name>Low Toner</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>2a0d71f7e6b34008b5be70f3415d4ac5</uuid>
+                    <name>State - Marker Supply Missing</name>
+                    <type>DEPENDENT</type>
+                    <key>markerSupplyMissing</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 10; // markerSupplyMissing
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>1bfd209ddbf44d67997eddfeb5976ffc</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/markerSupplyMissing)=1</expression>
+                            <name>Marker Supply Missing</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>25789b9439504f44bc7ba864a923ae15</uuid>
+                    <name>State - No Paper</name>
+                    <type>DEPENDENT</type>
+                    <key>noPaper</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 1; // noPaper
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>0489f6ef91ec407d90b68ff8da21b7e8</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/noPaper)=1</expression>
+                            <name>No Paper</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>325142fbf9434013bb2366aa89d60774</uuid>
+                    <name>State - No Toner</name>
+                    <type>DEPENDENT</type>
+                    <key>noToner</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 3; // noToner
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>3a822caede8046639fa2345a8a48250e</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/noToner)=1</expression>
+                            <name>No Toner</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>2d997651259e4f71ab8902c6fd3bbe89</uuid>
+                    <name>State - Offline</name>
+                    <type>DEPENDENT</type>
+                    <key>offline</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 6; // offline
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>e5d84a2ac1a1427384c196ad829ad32e</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/offline)=1</expression>
+                            <name>Offline</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>e59cf35559524cb1a5425d202b0887ad</uuid>
+                    <name>State - Output Full</name>
+                    <type>DEPENDENT</type>
+                    <key>outputFull</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 12; // outputFull
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>6f69c516ffa34344be305b44b127e100</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/outputFull)=1</expression>
+                            <name>Output Full</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>ccdf3e79dab0459fa08900cd29a0e411</uuid>
+                    <name>State - Output Near Full</name>
+                    <type>DEPENDENT</type>
+                    <key>outputNearFull</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 11; // outputNearFull
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>edda19c944a34837966c99f5ecbd42fc</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/outputNearFull)=1</expression>
+                            <name>Output Near Full</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>2440430661cb40c8955d17fa9b0e93df</uuid>
+                    <name>State - Output Tray Missing</name>
+                    <type>DEPENDENT</type>
+                    <key>outputTrayMissing</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 9; // outputTrayMissing
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>85b6afcc80e843eb9371f68a4d1f55a1</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/outputTrayMissing)=1</expression>
+                            <name>Output Tray Missing</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>86ea2240295e45f39ff889dcafde6caf</uuid>
+                    <name>State - Overdue Preventive Maintenance</name>
+                    <type>DEPENDENT</type>
+                    <key>overduePreventMaint</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 14; // overduePreventMaint
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>3cc3cb2dbffc46ba8188b6d15a78e1da</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/overduePreventMaint)=1</expression>
+                            <name>Overdue Preventive Maintenance</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>263cf59c6b924ee8a35aac7fce762145</uuid>
+                    <name>Printer serial number</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.43.5.1.1.17.1</snmp_oid>
+                    <key>prtGeneralSerialNumber</key>
+                    <delay>12h</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>SERIALNO_A</inventory_link>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>General</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>3ac951bf490342b7b4dc18bff2246762</uuid>
+                    <name>Printer lifetime counter</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.43.10.2.1.4.1.1</snmp_oid>
+                    <key>prtMarkerLifeCount</key>
+                    <history>1w</history>
+                    <valuemap>
+                        <name>Printer - Status</name>
+                    </valuemap>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Printer Information</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>8b9a167985ba4f408a7222907987d868</uuid>
+                    <name>Printer power on counter</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.43.10.2.1.5.1.1</snmp_oid>
+                    <key>prtMarkerPowerOnCount</key>
+                    <history>1w</history>
+                    <valuemap>
+                        <name>Printer - Status</name>
+                    </valuemap>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Printer Information</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>8686fd12986d4287bb812156ccf05983</uuid>
+                    <name>State - Service Requested</name>
+                    <type>DEPENDENT</type>
+                    <key>serviceRequested</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Yes No</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>var hex = value.replace(/\s/g, '');
+var num = parseInt(hex, 16);
+var index = 7; // serviceRequested
+var mask = 1 &lt;&lt; (15 - index); // 16 bits, MSB es bit 0
+return (num &amp; mask) ? 1 : 0;
+</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>hrPrinterDetectedErrorState</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <uuid>fadd2248de444dbdb344efa16e56a4cb</uuid>
+                            <expression>last(/Latam_Items_Printer_GenericSnmp/serviceRequested)=1</expression>
+                            <name>Service Requested</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>220ae846c1f5492b83668cb07d9ec43b</uuid>
+                    <name>Display</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.2.1.43.16.5.1.2]</snmp_oid>
+                    <key>prtConsoleDisplayBuffer</key>
+                    <delay>5m</delay>
+                    <lifetime>1h</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>dc38fb4dabc44df1bd11bc2d71251eb7</uuid>
+                            <name>Display - Line {#SNMPINDEX}</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.16.5.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>prtConsoleDisplayBufferText[{#SNMPINDEX}]</key>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>b5eab98e5e744c02a17347ce6f870ff3</uuid>
+                    <name>Cover</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.2.1.43.6.1.1.2]</snmp_oid>
+                    <key>prtCoverDescription</key>
+                    <delay>1h</delay>
+                    <status>DISABLED</status>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>a9d1a77e09b2478983d495ed7d0796af</uuid>
+                            <name>Cover - {#SNMPVALUE} - Description</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.6.1.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>prtCoverDescription[{#SNMPVALUE}]</key>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Cover</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bd4e6c2f420e4e60ab5c21fc7bee3af4</uuid>
+                            <name>Cover - {#SNMPVALUE} - Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.6.1.1.3.{#SNMPINDEX}</snmp_oid>
+                            <key>prtCoverStatus[{#SNMPVALUE}]</key>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>Cover - state</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Cover</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>1d52c6107b5043f6bb3a4ea9d01b8ee8</uuid>
+                                    <expression>last(/Latam_Items_Printer_GenericSnmp/prtCoverStatus[{#SNMPVALUE}],#1:now-600s)&lt;&gt;4 and last(/Latam_Items_Printer_GenericSnmp/prtCoverStatus[{#SNMPVALUE}],#1:now-600s)&lt;&gt;6</expression>
+                                    <name>Cover {#SNMPVALUE} on printer {HOST.NAME} is not closed</name>
+                                    <status>DISABLED</status>
+                                    <discover>NO_DISCOVER</discover>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>8d3f00d5f89f4c6ead061c783b045247</uuid>
+                    <name>Input</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},.1.3.6.1.2.1.43.8.2.1.18]</snmp_oid>
+                    <key>prtInputDescription</key>
+                    <delay>1h</delay>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>23664dd189c449ce9a08d394ea23b83f</uuid>
+                            <name>Input - {#SNMPVALUE} - Capacity</name>
+                            <type>CALCULATED</type>
+                            <key>prtInputCapacity[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>30d</history>
+                            <trends>30d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <params>100*last(//prtInputCurrentLevel[{#SNMPVALUE}])/last(//prtInputMaxCapacity[{#SNMPVALUE}])</params>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bea1174a03044d7ca7785124121064a1</uuid>
+                            <name>Input - {#SNMPVALUE} - Current level</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.10.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputCurrentLevel[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>30d</history>
+                            <trends>30d</trends>
+                            <value_type>FLOAT</value_type>
+                            <description>The current capacity of the input sub-unit in input sub-unit capacity units (PrtCapacityUnitTC). If this input sub-unit can reliably sense this value, the value
+is sensed by the printer and may not be changed by management requests;otherwise, the value may be written (by a Remote Control Panel or a Management Application).
+
+The value (-1) means other and specifically indicates that the sub-unit places no restrictions on this parameter.
+The value (-2) means unknown.
+The value (-3) means that the printer knows that at least one unit remains.</description>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>e1b0ebec0a2e4ca3be96d28e4d6b444e</uuid>
+                            <name>Input - {#SNMPVALUE} - Description</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.18.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputDescription[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>853ff9a9dfd6422287210d1f1e6cd63c</uuid>
+                            <name>Input - {#SNMPVALUE} - Max Capacity</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.9.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputMaxCapacity[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>30d</trends>
+                            <value_type>FLOAT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c0293646d5f3457e94c1b4faa49ad5bc</uuid>
+                            <name>Input - {#SNMPVALUE} - Media Name</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.12.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputMediaName[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c529b326b8ad47ba85c5146398717c9c</uuid>
+                            <name>Input - {#SNMPVALUE} - Model</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.15.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputModel[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>fe5623505ae243c18d43ae5d90d04c30</uuid>
+                            <name>Input - {#SNMPVALUE} - Serial Number</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.17.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputSerialNumber[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <description>Disabled - Lexmark - Value not set</description>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>4f0fa8511cac4ba19dfd664ae64d4b7b</uuid>
+                            <name>Input - {#SNMPVALUE} - Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.11.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputStatus[{#SNMPVALUE}]</key>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>56bee7e8ef2e4e1b993201eafafeca50</uuid>
+                                    <expression>last(/Latam_Items_Printer_GenericSnmp/prtInputStatus[{#SNMPVALUE}],#1:now-600s)&lt;&gt;0</expression>
+                                    <name>Input {#SNMPVALUE} on printer {HOST.NAME} has changed</name>
+                                    <status>DISABLED</status>
+                                    <discover>NO_DISCOVER</discover>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d0ff9bd7a322470a9e30fa268764afc3</uuid>
+                            <name>Input - {#SNMPVALUE} - Type</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.8.2.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>prtInputType[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <valuemap>
+                                <name>Input - Type</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Input</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>1cbeae9765f24213833ee9cb37727f4d</uuid>
+                    <name>Marker</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.2.1.43.10.2.1.3]</snmp_oid>
+                    <key>prtMarker</key>
+                    <delay>1h</delay>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>6a5ad24a640a459e9c8a75a8daa4d6e0</uuid>
+                            <name>Marker - {#SNMPINDEX} - Counter Mesaurement Unit</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.10.2.1.3.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerCounterUnit[{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <valuemap>
+                                <name>Marker - Counter Measurement Unit</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>12h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>79d2ff3b7c1e4fbda89506bb17bfa365</uuid>
+                            <name>Marker - {#SNMPINDEX} - Counter</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.10.2.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerLifeCount[{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>30d</history>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>12h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ead2a1c522014da7868afe2606d65579</uuid>
+                            <name>Marker - {#SNMPINDEX} - Technology</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.10.2.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerMarkTech[{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <valuemap>
+                                <name>Marker - Technology</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>12h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>630c6e804df8493798fafaec39a68bfe</uuid>
+                    <name>Supplies</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.2.1.43.11.1.1.6]</snmp_oid>
+                    <key>prtMarkerSuppliesDescription</key>
+                    <delay>1h</delay>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>22efabf507234a0eaed403d9142fe65c</uuid>
+                            <name>Supplies - {#SNMPVALUE} - Color</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.12.1.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerColorantValue[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Supplies</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b929f577ad074c9c9ec1afe218125b2d</uuid>
+                            <name>Supplies - {#SNMPVALUE} - Current Capacity</name>
+                            <type>CALCULATED</type>
+                            <key>prtMarkerSuppliesCapacity[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>30d</history>
+                            <trends>90d</trends>
+                            <units>%</units>
+                            <params>100*last(//prtMarkerSuppliesLevel[{#SNMPVALUE}])/last(//prtMarkerSuppliesMaxCapacity[{#SNMPVALUE}])</params>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Supplies</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>21dc58561b6a4ddbbc89e25a03d6105a</uuid>
+                                    <expression>last(/Latam_Items_Printer_GenericSnmp/prtMarkerSuppliesCapacity[{#SNMPVALUE}])&lt;2</expression>
+                                    <name>Toner {#SNMPVALUE} is low on printer {HOST.NAME}</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d255e82b0ac945859f5aeec466d8ae65</uuid>
+                            <name>Supplies - {#SNMPVALUE} - Description</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.11.1.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerSuppliesDescription[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>CHAR</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Supplies</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>835a3f4104384bdaa80d062b7c05d6dd</uuid>
+                            <name>Supplies - {#SNMPVALUE} - Level</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.11.1.1.9.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerSuppliesLevel[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>30d</history>
+                            <trends>90d</trends>
+                            <value_type>FLOAT</value_type>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Supplies</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>071bff28a58b499d80b01340cff0238d</uuid>
+                            <name>Supplies - {#SNMPVALUE} - Max Capacity</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.11.1.1.8.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMarkerSuppliesMaxCapacity[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>30d</history>
+                            <trends>90d</trends>
+                            <value_type>FLOAT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Supplies</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>d81c55c82e3b4ea38bb5e756a50047cd</uuid>
+                            <name>Level of supplies {#SNMPVALUE} line</name>
+                            <graph_items>
+                                <graph_item>
+                                    <drawtype>FILLED_REGION</drawtype>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Latam_Items_Printer_GenericSnmp</host>
+                                        <key>prtMarkerSuppliesLevel[{#SNMPVALUE}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <uuid>f0d68b3b5483428baff8e8d7874f48ec</uuid>
+                            <name>Level of supplies {#SNMPVALUE} pie</name>
+                            <width>400</width>
+                            <yaxismax>0</yaxismax>
+                            <show_work_period>NO</show_work_period>
+                            <show_triggers>NO</show_triggers>
+                            <type>PIE</type>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Latam_Items_Printer_GenericSnmp</host>
+                                        <key>prtMarkerSuppliesLevel[{#SNMPVALUE}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>F63100</color>
+                                    <type>GRAPH_SUM</type>
+                                    <item>
+                                        <host>Latam_Items_Printer_GenericSnmp</host>
+                                        <key>prtMarkerSuppliesMaxCapacity[{#SNMPVALUE}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>5ba075d463c44c2b969baa794234886d</uuid>
+                    <name>Media Path</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},.1.3.6.1.2.1.43.13.4.1.10]</snmp_oid>
+                    <key>prtMediaPathDescription</key>
+                    <delay>1h</delay>
+                    <status>DISABLED</status>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>0d6fd4ab9c894904b12496d96d52e356</uuid>
+                            <name>Media Path - {#SNMPVALUE} - Description of supplies</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.13.4.1.10.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMediaPathDescription[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <value_type>CHAR</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Media Path</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>22584380ea2246b4be7194f56d63aadc</uuid>
+                            <name>Media Path - {#SNMPVALUE} - Status of supplies</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.13.4.1.11.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMediaPathStatus[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Media Path</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9175f4b57dc84644b066a277244d2618</uuid>
+                            <name>Media Path - {#SNMPVALUE} - Type</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.13.4.1.9.{#SNMPINDEX}</snmp_oid>
+                            <key>prtMediaPathType[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Media Path</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7d83fa65a1614470be655a92b4681d4e</uuid>
+                    <name>Output</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},.1.3.6.1.2.1.43.9.2.1.12]</snmp_oid>
+                    <key>prtOutputDescription</key>
+                    <delay>1h</delay>
+                    <status>DISABLED</status>
+                    <lifetime>5d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>f0d38e7043be4124b95c3718d9736028</uuid>
+                            <name>Output - {#SNMPVALUE} - Description</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.9.2.1.12.{#SNMPINDEX}</snmp_oid>
+                            <key>prtOutputDescription[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Output</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>948070775ada49b19039c1152124227b</uuid>
+                            <name>Output - {#SNMPVALUE} - Max Capacity</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.9.2.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>prtOutputMaxCapacity[{#SNMPVALUE}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <value_type>FLOAT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Output</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d4aba18c70a041d6a5658536260ab8ce</uuid>
+                            <name>Output - {#SNMPVALUE} - Remaining Capacity</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.9.2.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>prtOutputRemainingCapacity[{#SNMPVALUE}]</key>
+                            <delay>10m</delay>
+                            <history>10d</history>
+                            <trends>0</trends>
+                            <value_type>FLOAT</value_type>
+                            <description>The remaining capacity of the possible output sub-unit capacity in output sub unit capacity units (PrtCapacityUnitTC)of this output sub-unit. If this output sub unit can reliably sense this value, the value is sensed by the printer and may not be modified by management requests;otherwise, the value may be written (by a Remote Control Panel or a Management Application).
+
+The value (-1) means other and specifically indicates that the sub-unit places no restrictions on this parameter. 
+The value (-2) means unknown. 
+The value (-3) means that the printer knows that there remains capacity for at least one unit.</description>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Output</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9a088fb7d85545b7a879b60b112efb7c</uuid>
+                            <name>Output - {#SNMPVALUE} - Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.43.9.2.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>prtOutputStatus[{#SNMPVALUE}]</key>
+                            <history>10d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>Output - Status</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Printer Output</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>5087898e32304b298d4c82422addbe60</uuid>
+                                    <expression>last(/Latam_Items_Printer_GenericSnmp/prtOutputStatus[{#SNMPVALUE}],#1:now-600s)&lt;&gt;0</expression>
+                                    <name>Output {#SNMPVALUE} on printer {HOST.NAME} has changed</name>
+                                    <status>DISABLED</status>
+                                    <discover>NO_DISCOVER</discover>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+            </discovery_rules>
+            <tags>
+                <tag>
+                    <tag>class</tag>
+                    <value>printer</value>
+                </tag>
+                <tag>
+                    <tag>target</tag>
+                    <value>universal</value>
+                </tag>
+            </tags>
+            <dashboards>
+                <dashboard>
+                    <uuid>bd9e2480da554f8c8835a789dd251731</uuid>
+                    <name>Printer</name>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <width>24</width>
+                                    <height>5</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>Latam_Items_Printer_GenericSnmp</host>
+                                                <name>Level of supplies {#SNMPVALUE} pie</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+            </dashboards>
+            <valuemaps>
+                <valuemap>
+                    <uuid>aacbfda62fe54679a6a5aac7288c8050</uuid>
+                    <name>Alert - Code</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Cover Open</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Cover Closed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Interlock Open</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Interlock Closed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>Configuration Changed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>Jammed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Sub Unit Missing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Sub Unit Life Almost Over</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>Sub Unit Over</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>Sub Unit Almost Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>Sub Unit Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>14</value>
+                            <newvalue>Sub Unit Almost Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>15</value>
+                            <newvalue>Sub Unit Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>Sub Unit Near Limit</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>17</value>
+                            <newvalue>Sub Unit At Limit</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>18</value>
+                            <newvalue>Sub Unit Opened</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>19</value>
+                            <newvalue>Sub Unit Closed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>20</value>
+                            <newvalue>Sub Unit Turned On</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>21</value>
+                            <newvalue>Sub Unit Turned Off</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>22</value>
+                            <newvalue>Sub Unit Offline</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>23</value>
+                            <newvalue>Sub Unit Power Saver</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>24</value>
+                            <newvalue>Sub Unit Warming Up</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>25</value>
+                            <newvalue>Sub Unit Added</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>26</value>
+                            <newvalue>Sub Unit Removed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>27</value>
+                            <newvalue>Sub Unit Resource Added</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>28</value>
+                            <newvalue>Sub Unit Resource Removed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>29</value>
+                            <newvalue>Sub Unit Recoverable Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>30</value>
+                            <newvalue>Sub Unit Unrecoverable Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>31</value>
+                            <newvalue>Sub Unit Recoverable Storage Error</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32</value>
+                            <newvalue>Sub Unit Unrecoverable StorageError</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>33</value>
+                            <newvalue>Sub Unit Moto rFailure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>34</value>
+                            <newvalue>Sub Unit Memory Exhausted</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>35</value>
+                            <newvalue>Sub Unit Under Temperature</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>36</value>
+                            <newvalue>Sub Unit Over Temperature</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>37</value>
+                            <newvalue>Sub Unit Timing Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>38</value>
+                            <newvalue>Sub Unit Thermistor Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>501</value>
+                            <newvalue>Door Open</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>502</value>
+                            <newvalue>Door Closed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>503</value>
+                            <newvalue>Powered Up</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>504</value>
+                            <newvalue>Powered Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>505</value>
+                            <newvalue>Printer NMS Reset</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>506</value>
+                            <newvalue>Printer Manual Reset</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>507</value>
+                            <newvalue>Printer Ready To Print</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>801</value>
+                            <newvalue>Input Media Tray Missing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>802</value>
+                            <newvalue>Input Media Size Changed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>803</value>
+                            <newvalue>Input Media Weight Changed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>804</value>
+                            <newvalue>Inpu tMedia Type Changed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>805</value>
+                            <newvalue>Input Media Color Changed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>806</value>
+                            <newvalue>input Media Form Parts Change</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>807</value>
+                            <newvalue>Input Media Supply Low</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>808</value>
+                            <newvalue>Input Media Supply Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>809</value>
+                            <newvalue>Input Media Change Request</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>810</value>
+                            <newvalue>Input Manual Input Request</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>811</value>
+                            <newvalue>Input Tray Position Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>812</value>
+                            <newvalue>Input Tray Elevation Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>813</value>
+                            <newvalue>Input Cannot Feed Size Selected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>901</value>
+                            <newvalue>Output Media Tray Missing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>902</value>
+                            <newvalue>Output Media Tray AlmostFull</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>903</value>
+                            <newvalue>Output Media Tray Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>904</value>
+                            <newvalue>Output Mailbox Select Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1001</value>
+                            <newvalue>Marker Fuser Under Temperature</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1002</value>
+                            <newvalue>Marker Fuser Over Temperature</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1003</value>
+                            <newvalue>Marker Fuser Timing Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1004</value>
+                            <newvalue>Marker Fuser Thermistor Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1005</value>
+                            <newvalue>Marker Adjusting Print Quality</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1101</value>
+                            <newvalue>Marker Toner Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1102</value>
+                            <newvalue>Marker Ink Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1103</value>
+                            <newvalue>Marker Print Ribbon Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1104</value>
+                            <newvalue>Marker Toner Almost Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1105</value>
+                            <newvalue>Marker Ink Almost Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1106</value>
+                            <newvalue>Marker Print Ribbon AlmostEmpty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1107</value>
+                            <newvalue>Marker Waste Toner Receptacle Almost Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1108</value>
+                            <newvalue>Marker Waste Ink Receptacle Almost Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1109</value>
+                            <newvalue>Marker Waste Toner Receptacle Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1110</value>
+                            <newvalue>Marker Waste Ink Receptacle Full</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1111</value>
+                            <newvalue>Marker Opc Life Almost Over</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1112</value>
+                            <newvalue>Marker Opc Life Over</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1113</value>
+                            <newvalue>Marker Developer Almost Empty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1114</value>
+                            <newvalue>Marker Developer Empty</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>d22af56367b74f038f4adf7f78796e1c</uuid>
+                    <name>Cover - state</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>doorOpen</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>doorClosed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>interlockOpen</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>interlockClosed</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>a976b5fd8b3343d4ae29708099b9cfb4</uuid>
+                    <name>Input - Type</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>sheetFeedAutoRemovableTray</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>sheetFeedAutoNonRemovableTray</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>sheetFeedManual</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>continuousRoll</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>continuousFanFold</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>72241a21eb88448c8dd2e1ae211c56af</uuid>
+                    <name>Marker - Counter Measurement Unit</name>
+                    <mappings>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>tenThousandthsOfInches</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>micrometers</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>characters</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>lines</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>impressions</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>sheets</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>dotRow</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>hours</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>feet</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>17</value>
+                            <newvalue>meters</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>3c84d8290a8c4319802ec583e17a1e5c</uuid>
+                    <name>Marker - Technology</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Oother</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>electrophotographicLED</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>electrophotographicLaser</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>electrophotographicOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>impactMovingHeadDotMatrix9pin</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>impactMovingHeadDotMatrix24pin</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>impactMovingHeadDotMatrixOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>impactMovingHeadFullyFormed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>impactBand</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>impactOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>inkjetAqueous</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>inkjetSolid</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>14</value>
+                            <newvalue>inkjetOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>15</value>
+                            <newvalue>pen</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>thermalTransfer</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>17</value>
+                            <newvalue>thermalSensitive</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>18</value>
+                            <newvalue>thermalDiffusion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>19</value>
+                            <newvalue>thermalOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>20</value>
+                            <newvalue>electroerosion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>21</value>
+                            <newvalue>electrostatic</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>22</value>
+                            <newvalue>photographicMicrofiche</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>23</value>
+                            <newvalue>photographicImagesetter</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>24</value>
+                            <newvalue>photographicOther</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>25</value>
+                            <newvalue>ionDeposition</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>26</value>
+                            <newvalue>eBeam</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>27</value>
+                            <newvalue>typesetter</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>3ad325da75db4b4da0f9dc143605a34b</uuid>
+                    <name>Output - Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Running</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Warning</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Testing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>05d96e19a65c42e5b7fbcb5a68cedd13</uuid>
+                    <name>Printer - Error State</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>lowPaper</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>noPaper</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>lowToner</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>noToner</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>doorOpen</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>jammed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>offline</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>serviceRequested</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>inputTrayMissing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>outputTrayMissing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>markerSupplyMissing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>outputNearFull</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>outputFull</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>inputTrayEmpty</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>14</value>
+                            <newvalue>overduePreventMaint</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>5bd835c2e4764619a7462a43b5349450</uuid>
+                    <name>Printer - Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>idle</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>printing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>warmup</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>b8dfe7f07d4842e582380bce3331b7d0</uuid>
+                    <name>Yes No</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>No</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Yes</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>
